@@ -1,24 +1,49 @@
-<script>
-  // ✅ Prefill + minimum instellen vanuit URL, bv. ?amount=20
-  const params = new URLSearchParams(window.location.search);
-  const preset = params.get("amount");
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Maandelijkse donatie</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
 
-  const amountInput = document.querySelector('input[name="amount"]');
-  if (preset && amountInput) {
-    const minVal = Number(preset);
-    if (!Number.isNaN(minVal) && minVal > 0) {
-      amountInput.value = String(minVal);
-      amountInput.min = String(minVal); // <- dit maakt het minimumbedrag 20
-    }
-  }
+  <body style="font-family: system-ui; max-width: 520px; margin: 40px auto; padding: 0 16px;">
+    <h1>Start maandelijkse donatie</h1>
 
-  // bestaande submit gedrag
-  document.getElementById("f").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const name = encodeURIComponent(fd.get("name"));
-    const email = encodeURIComponent(fd.get("email"));
-    const amount = encodeURIComponent(fd.get("amount"));
-    window.location.href = `/api/start?name=${name}&email=${email}&amount=${amount}`;
-  });
-</script>
+    <form id="f">
+      <label>Naam<br><input name="name" required style="width:100%; padding:10px; margin-top:6px;"></label><br><br>
+      <label>E-mail<br><input name="email" type="email" required style="width:100%; padding:10px; margin-top:6px;"></label><br><br>
+      <label>Bedrag per maand (€)<br>
+        <input id="amount" name="amount" type="number" min="1" step="0.01" value="10" required style="width:100%; padding:10px; margin-top:6px;">
+      </label><br><br>
+
+      <button type="submit" style="padding:12px 18px; cursor:pointer;">Verder naar iDEAL</button>
+    </form>
+
+    <p id="msg" style="margin-top:12px;"></p>
+
+    <script>
+      // Prefill + minimum instellen vanuit URL, bv. ?amount=20
+      const params = new URLSearchParams(window.location.search);
+      const preset = params.get("amount");
+      const amountInput = document.getElementById("amount");
+
+      if (preset && amountInput) {
+        const minVal = Number(preset);
+        if (!Number.isNaN(minVal) && minVal > 0) {
+          amountInput.value = String(minVal);
+          amountInput.min = String(minVal); // minimumbedrag
+        }
+      }
+
+      document.getElementById("f").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const name = encodeURIComponent(fd.get("name"));
+        const email = encodeURIComponent(fd.get("email"));
+        const amount = encodeURIComponent(fd.get("amount"));
+        document.getElementById("msg").textContent = "Je wordt doorgestuurd naar iDEAL…";
+        window.location.href = `/api/start?name=${name}&email=${email}&amount=${amount}`;
+      });
+    </script>
+  </body>
+</html>
