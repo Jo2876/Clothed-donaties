@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Maandelijkse donatie</title>
+  </head>
+  <body style="font-family: system-ui; max-width: 520px; margin: 40px auto;">
+    <h1>Start maandelijkse donatie</h1>
+
+    <form id="f">
+      <label>Naam<br><input name="name" required style="width:100%; padding:10px"></label><br><br>
+      <label>E-mail<br><input name="email" type="email" required style="width:100%; padding:10px"></label><br><br>
+      <label>Bedrag per maand (€)<br><input name="amount" type="number" min="1" step="0.01" value="10" required style="width:100%; padding:10px"></label><br><br>
+
+      <button type="submit" style="padding:12px 18px;">Verder naar iDEAL</button>
+    </form>
+
+    <script>
+      document.getElementById("f").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const name = encodeURIComponent(fd.get("name"));
+        const email = encodeURIComponent(fd.get("email"));
+        const amount = encodeURIComponent(fd.get("amount"));
+        window.location.href = `/api/start?name=${name}&email=${email}&amount=${amount}`;
+      });
+    </script>
+  </body>
+</html>
