@@ -32,7 +32,7 @@ export default async function handler(req, res) {
         method: "ideal",
         customerId: customer.id,
         sequenceType: "first",
-        redirectUrl: "https://clothed-donaties.vercel.app/bedankt",
+        redirectUrl: "https://the-clothed.nl/pages/bedankt",
         webhookUrl: "https://clothed-donaties.vercel.app/api/webhook",
         metadata: {
           email,
