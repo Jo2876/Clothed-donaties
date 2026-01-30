@@ -12,7 +12,12 @@ export default async function handler(req, res) {
     );
     const payment = await paymentRes.json();
 
-    // 2) Alleen doorgaan als eerste betaling geslaagd is
+    // 2) startDate = 1 maand later (dynamisch per donor)
+    const start = new Date();
+    start.setMonth(start.getMonth() + 1);
+    const startDate = start.toISOString().slice(0, 10);
+
+    // 3) Alleen doorgaan als eerste betaling geslaagd is
     if (payment.status === "paid" && payment.sequenceType === "first") {
       await fetch(
         `https://api.mollie.com/v2/customers/${payment.customerId}/subscriptions`,
@@ -26,13 +31,14 @@ export default async function handler(req, res) {
             amount: payment.amount,
             interval: "1 month",
             description: "Maandelijkse donatie",
+            startDate: startDate,
           }),
         }
       );
     }
 
-    res.status(200).send("ok");
+    return res.status(200).send("ok");
   } catch (e) {
-    res.status(500).send(e.message);
+    return res.status(500).send(e.message);
   }
 }
